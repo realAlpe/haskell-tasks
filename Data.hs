@@ -14,13 +14,13 @@ deserialize xs = let (a, []) = decode xs in a
 instance Data Bool where
   -- O -> False, I -> True
   encode :: (Bool, [Bit]) -> [Bit]
-  encode (True, xs) = I : xs
   encode (False, xs) = O : xs
+  encode (True, xs) = I : xs
 
   decode :: [Bit] -> (Bool, [Bit])
   decode [] = error "Input cannot be empty."
-  decode (I : xs) = (True, xs)
   decode (O : xs) = (False, xs)
+  decode (I : xs) = (True, xs)
 
 instance Data Bit where
   encode :: (Bit, [Bit]) -> [Bit]
@@ -64,7 +64,7 @@ instance (Data a) => Data [a] where
 
 instance (Data a, Data b) => Data (a, b) where
   encode :: (Data a, Data b) => ((a, b), [Bit]) -> [Bit]
-  encode ((a, b), xs) = encode (a, []) ++ encode (b, xs)
+  encode ((a, b), xs) = encode (a, encode (b, xs))
 
   decode :: (Data a, Data b) => [Bit] -> ((a, b), [Bit])
   decode xs =
@@ -86,7 +86,7 @@ instance Data Integer where
   -- O -> non-negative, I -> negative
   encode :: (Integer, [Bit]) -> [Bit]
   encode (a, xs) =
-    (if a < 0 then I else O) : encode (integerToBits (abs a), xs) -- encode with [Bit]
+    (if a >= 0 then O else I) : encode (integerToBits (abs a), xs) -- encode with [Bit]
 
   decode :: [Bit] -> (Integer, [Bit])
   decode (x : xs) =

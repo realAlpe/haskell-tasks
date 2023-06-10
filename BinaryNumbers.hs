@@ -8,7 +8,6 @@ instance Eq Binary where
   Bin a == Bin b = reduce a == reduce b
 
 removeLeading :: [Bit] -> [Bit]
-removeLeading [] = []
 removeLeading (O : xs) = removeLeading xs
 removeLeading xs = xs
 

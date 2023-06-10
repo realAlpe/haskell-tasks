@@ -1,21 +1,17 @@
-splitAt' :: Int -> [a] -> ([a], [a])
-splitAt' _ [] = ([], [])
-splitAt' 0 xs = ([], xs)
-splitAt' n (x : xs) =
-  let (ys, zs) = splitAt' (n - 1) xs
-   in (x : ys, zs)
-
 -- b) top-down
 foldmTD :: (a -> a -> a) -> a -> [a] -> a
 foldmTD _ e [] = e
 foldmTD f e [x] = f e x
-foldmTD f e xs =
-  let (ys, zs) = splitAt (length xs `div` 2) xs
-   in f (foldmTD f e ys) (foldmTD f e zs)
+foldmTD f e xs = f (foldmTD f e left) (foldmTD f e right)
+  where
+    (left, right) = splitAt (length xs `div` 2) xs
 
 -- c) bottom-up
 foldmBU :: (a -> a -> a) -> a -> [a] -> a
 foldmBU _ e [] = e
-foldmBU f e [x] = f e x
-foldmBU f e (x : y : xs) =
-  f (f x y) (foldmBU f e xs)
+foldmBU _ _ [x] = x
+foldmBU f e xs = foldmBU f e $ step xs
+  where
+    step [] = []
+    step [x] = [x]
+    step (x : y : ys) = f x y : step ys
