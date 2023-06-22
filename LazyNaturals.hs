@@ -22,8 +22,8 @@ height (p :+ ps) = max p (height ps)
 
 instance (Num natural, Ord natural) => Num (Super natural) where
   (+) :: (Num natural, Ord natural) => Super natural -> Super natural -> Super natural
-  p + O = p
-  O + q = q
+  ps + O = ps
+  O + qs = qs
   (a :+ as) + (b :+ bs) =
     (a + b) :+ (as + bs)
 
@@ -46,7 +46,7 @@ instance (Num natural, Ord natural) => Ord (Super natural) where
   compare O O = EQ
   compare O _ = LT
   compare _ O = GT
-  compare p q = compare (value p) (value q)
+  compare p q = compare (value p) (value q) -- bad since everything is evaluated (not too lazy)
 
 -- compare (a :+ as) (b :+ bs) = value
 
